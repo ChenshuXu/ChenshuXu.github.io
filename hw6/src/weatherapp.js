@@ -45,8 +45,8 @@ function onSubmitClick(event) {
             success: function (data) {
                 console.log(data);
                 let loc = data.loc;
-                let lat = loc.split(",")[0];
-                let lng = loc.split(",")[1];
+                let lat = parseFloat(loc.split(",")[0]);
+                let lng = parseFloat(loc.split(",")[1]);
                 RequestWeatherData(lat, lng);
             }
         });
@@ -66,8 +66,8 @@ function onSubmitClick(event) {
                 dataType: "json",
                 success: function (data) {
                     console.log(data);
-                    let lat = data.results[0].geometry.location.lat;
-                    let lng = data.results[0].geometry.location.lng;
+                    let lat = parseFloat(data.results[0].geometry.location.lat);
+                    let lng = parseFloat(data.results[0].geometry.location.lng);
                     RequestWeatherData(lat, lng);
                 }
             });
@@ -79,4 +79,13 @@ function RequestWeatherData(lat, lng) {
     console.log("request weather data");
     console.log(lat);
     console.log(lng);
+    let url = "https://csci571-chenshu-app.azurewebsites.net/example";
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+        }
+    });
 }
