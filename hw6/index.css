@@ -1,0 +1,115 @@
+body {
+    background: #e6e6e6;
+}
+.weather-search {
+    width: 600px;
+    margin: auto;
+    box-shadow: 0 3px #c5c5c5;
+    border: 1px #cbcdcf solid;
+}
+.weather-search .banner {
+    background-image: url("Images/banner.jpg");
+    height: 100px;
+    border-bottom: 1px #cbcdcf solid;
+    padding: 20px 40px 20px 40px;
+}
+.banner-header {
+    font-family: sans-serif;
+    font-size: 30px;
+    color: #535456;
+    margin-top: 20px;
+}
+.banner-text {
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #535456;
+    margin-top: 30px;
+}
+.weather-search .input-area {
+    background-color: #ffffff;
+    padding: 34px;
+}
+label {
+    color: #7388b6;
+    font-family: sans-serif;
+}
+label a {
+    color: #f59aaf;
+}
+.grid-container input {
+    height: 30px;
+    width: 100%;
+    border: 1px solid #ccc;
+    margin: 8px 0;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #6e7388;
+}
+.grid-container select {
+    height: 35px;
+    width: 100%;
+    border: 1px solid #ccc;
+    margin: 8px 0;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #6e7388;
+}
+.grid-container {
+    height: 150px;
+}
+.grid-one {
+    height: 50%;
+    width: 98%;
+ }
+.grid-row {
+    height: 50%;
+    width: 100%;
+}
+.grid-two {
+    width: 40%;
+    height: 100%;
+    float: left;
+    padding-right: 20px;
+}
+.grid-three {
+    width: 52%;
+    height: 100%;
+    float: left;
+    padding-left: 20px;
+}
+.input-area hr {
+    border: 0;
+    height: 2px;
+    background-color: #7c93bd;
+}
+.check-box-area {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.check-box-area label {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    float: left;
+}
+.check-box-area input {
+    height: 20px;
+    width: 20px;
+}
+button {
+    height: 40px;
+    width: 90px;
+    color: white;
+    font-weight: lighter;
+    font-size: 15px;
+    border: 0;
+}
+button.submit {
+    background-color: #486aa9;
+    box-shadow: 0 5px #334a75;
+}
+button.clear {
+    background-color: #ffb80d;
+    box-shadow: 0 5px #f57e03;
+}
