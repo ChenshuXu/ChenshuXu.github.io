@@ -3,7 +3,7 @@ body {
 }
 .weather-search {
     width: 600px;
-    margin: auto;
+    margin: 40px auto auto;
     box-shadow: 0 3px #c5c5c5;
     border: 1px #cbcdcf solid;
 }
@@ -112,4 +112,61 @@ button.submit {
 button.clear {
     background-color: #ffb80d;
     box-shadow: 0 5px #f57e03;
+}
+.table-1 {
+    width: 700px;
+    margin: 40px auto auto;
+    box-shadow: 0 3px #c5c5c5;
+    border: 1px #cbcdcf solid;
+    background-color: white;
+}
+.location {
+    font-family: sans-serif;
+    font-size: 25px;
+    color: #8f8f8f;
+    margin: 20px;
+}
+.temperature-box {
+    margin: 20px;
+    height: 150px;
+}
+.temperature-box .status-image {
+    width: 50%;
+    float: left;
+}
+.temperature-box .status-image img {
+    width: 100px;
+    height: 100px;
+}
+.temperature-box .status-image div {
+    font-family: sans-serif;
+    font-size: 25px;
+    color: #8f8f8f;
+    margin-left: 10px;
+}
+.temperature-box .temperature {
+    width: 50%;
+    float: left;
+    font-family: sans-serif;
+    font-size: 120px;
+    color: #8f8f8f;
+    text-align: center;
+}
+.info-box {
+    margin: 20px;
+}
+.info-item {
+    display:inline-block;
+    vertical-align:middle;
+    width: 16%;
+    text-align: center;
+}
+.info-item img {
+    width: 40%;
+    margin: 10px;
+}
+.info-item div {
+    font-family: sans-serif;
+    font-size: 15px;
+    color: #8f8f8f;
 }
