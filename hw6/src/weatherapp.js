@@ -1,18 +1,32 @@
 'use strict';
 function WeatherApp() {
+    let that = this;
     console.log('app started');
+    this.currentWeatherData = null;
+    this.hourlyWeatherData = null;
+    this.timelineWeatherData = null;
+
     document.getElementById("input-form").addEventListener("submit", function (e) {
         e.preventDefault();
     });
-    document.getElementById("auto-detect-location").onchange = onAutoDetectLocationChange;
+    document.getElementById("auto-detect-location").addEventListener("change", function (e) {
+        that.onAutoDetectLocationChange();
+    });
 
-    document.getElementById("submit").addEventListener("click", onSubmitClick);
-    document.getElementById("clear").addEventListener("click", onClearClick);
+    document.getElementById("submit").addEventListener("click", function (e) {
+        that.onSubmitClick(e);
+    });
+    document.getElementById("clear").addEventListener("click", function (e) {
+        e.preventDefault();
+        that.Clear();
+    });
 }
 
-function onAutoDetectLocationChange () {
+WeatherApp.prototype.onAutoDetectLocationChange = function () {
+    let that = this;
     if (document.getElementById("auto-detect-location").checked) {
         console.log("checked");
+        this.Clear();
         document.getElementById("street").disabled = true;
         document.getElementById("city").disabled = true;
         document.getElementById("state").disabled = true;
@@ -24,9 +38,8 @@ function onAutoDetectLocationChange () {
     }
 }
 
-function onClearClick(event) {
-    event.preventDefault();
-    console.log("clear clicked");
+WeatherApp.prototype.Clear = function () {
+    console.log("clear");
     document.getElementById("street").value = "";
     document.getElementById("city").value = "";
     document.getElementById("state").value = "";
@@ -34,7 +47,8 @@ function onClearClick(event) {
     document.getElementById("table-2-area").innerHTML = "";
 }
 
-function onSubmitClick(event) {
+WeatherApp.prototype.onSubmitClick = function (event) {
+    let that = this;
     let street = document.getElementById("street").value;
     let city = document.getElementById("city").value;
     let state = document.getElementById("state").value;
@@ -50,8 +64,8 @@ function onSubmitClick(event) {
                 let lat = parseFloat(loc.split(",")[0]);
                 let lng = parseFloat(loc.split(",")[1]);
                 let location = data.city + ", " + data.region + ", " + data.country
-                RequestCurrentWeather(location, lat, lng);
-                RequestTimelineWeather(lat, lng);
+                that.RequestCurrentWeather(location, lat, lng);
+                that.RequestTimelineWeather(lat, lng);
             }
         });
     } else {
@@ -70,30 +84,32 @@ function onSubmitClick(event) {
                     let lat = parseFloat(data.results[0].geometry.location.lat);
                     let lng = parseFloat(data.results[0].geometry.location.lng);
                     let location = data.results[0].formatted_address;
-                    RequestCurrentWeather(location, lat, lng);
-                    RequestTimelineWeather(lat, lng);
+                    that.RequestCurrentWeather(location, lat, lng);
+                    that.RequestTimelineWeather(lat, lng);
                 }
             });
         }
     }
 }
 
-function RequestCurrentWeather(location, lat, lng) {
+WeatherApp.prototype.RequestCurrentWeather = function (location, lat, lng) {
+    let that = this;
     console.log("request current data", lat, lng);
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
-    let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
+    let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
         success: function (data) {
             console.log(data);
-            DisplayCurrentWeather(location, data);
+            that.currentWeatherData = data;
+            that.DisplayCurrentWeather(location, data);
         }
     });
 }
 
-function DisplayCurrentWeather(location, data) {
+WeatherApp.prototype.DisplayCurrentWeather = function (location, data) {
     console.log("display current weather");
     let html;
     if (data !== null) {
@@ -156,61 +172,91 @@ function DisplayCurrentWeather(location, data) {
 }
 
 
-function RequestTimelineWeather(lat, lng) {
+WeatherApp.prototype.RequestTimelineWeather = function (lat, lng) {
+    let that = this;
     console.log("request weather data", lat, lng);
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
-    let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
+    let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
         success: function (data) {
             console.log(data);
-            DisplayTimelineWeather(data);
+            that.timelineWeatherData = data;
+            that.DisplayTimelineWeather(data);
         }
     });
 }
 
-function DisplayTimelineWeather(data) {
-    let html = `
-    <div class="table-2">
-        <table>
-            <tr>
-                <th>Data</th>
-                <th>Status</th>
-                <th>Temp High</th>
-                <th>Temp Low</th>
-                <th>Wind Speed</th>
-            </tr>`;
+WeatherApp.prototype.DisplayTimelineWeather = function (data) {
+    let that = this;
+    let tableDiv = document.createElement('div');
+    tableDiv.classList.add("table-2");
+    let tableArea = document.getElementById("table-2-area")
+    tableArea.appendChild(tableDiv);
+    let table = document.createElement("table");
+    tableDiv.appendChild(table);
 
+    // header
+    let headerRow = document.createElement("tr");
+    let th1 = document.createElement("th");
+    th1.textContent = "Date";
+    let th2 = document.createElement("th");
+    th2.textContent = "Status";
+    let th3 = document.createElement("th");
+    th3.textContent = "Temp High";
+    let th4 = document.createElement("th");
+    th4.textContent = "Temp Low";
+    let th5 = document.createElement("th");
+    th5.textContent = "Wind Speed";
+    headerRow.appendChild(th1);
+    headerRow.appendChild(th2);
+    headerRow.appendChild(th3);
+    headerRow.appendChild(th4);
+    headerRow.appendChild(th5);
+    table.appendChild(headerRow);
+
+    // table body
     let dayArray = data.data.timelines[0].intervals;
-
     for (let i=0; i<dayArray.length; i++) {
         let datetime = new Date(dayArray[i].startTime);
         let values = dayArray[i].values;
         let comb = ConvertWeatherCode(values.weatherCode);
         let weatherText = comb[0];
         let weatherImgSrc = comb[1];
-        html += `
-            <tr>
-                <td>${GetDateText(datetime)}</td>
-                <td>
-                    <img src="Images/Weather%20Symbols%20for%20Weather%20Codes/${weatherImgSrc}">
-                    <a>${weatherText}</a>
-                </td>
-                <td>${values.temperatureMax}</td>
-                <td>${values.temperatureMin}</td>
-                <td>${values.windSpeed}</td>
-            </tr>
-        `;
+
+        let row = document.createElement("tr");
+        let td1 = document.createElement("td");
+        td1.textContent = GetDateText(datetime);
+        let td2 = document.createElement("td");
+        let img = document.createElement("img");
+        img.src = "Images/Weather%20Symbols%20for%20Weather%20Codes/" + weatherImgSrc;
+        let a = document.createElement("a");
+        a.textContent = weatherText;
+        td2.appendChild(img);
+        td2.appendChild(a);
+        let td3 = document.createElement("td");
+        td3.textContent = values.temperatureMax;
+        let td4 = document.createElement("td");
+        td4.textContent = values.temperatureMin;
+        let td5 = document.createElement("td");
+        td5.textContent = values.windSpeed;
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
+        row.appendChild(td4);
+        row.appendChild(td5);
+        table.appendChild(row);
+        row.addEventListener("click", function () {that.onRowClick(dayArray[i])});
     }
+}
 
-    html += `
-        </table>
-    </div>
-    `;
-
-    document.getElementById("table-2-area").innerHTML = html;
+WeatherApp.prototype.onRowClick = function (dayData) {
+    let that = this;
+    console.log("click row", dayData);
+    console.log(this.currentWeatherData);
+    this.Clear();
 
 }
 
