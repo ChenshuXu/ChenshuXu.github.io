@@ -31,6 +31,7 @@ function onClearClick(event) {
     document.getElementById("city").value = "";
     document.getElementById("state").value = "";
     document.getElementById("table-1-area").innerHTML = "";
+    document.getElementById("table-2-area").innerHTML = "";
 }
 
 function onSubmitClick(event) {
@@ -50,6 +51,7 @@ function onSubmitClick(event) {
                 let lng = parseFloat(loc.split(",")[1]);
                 let location = data.city + ", " + data.region + ", " + data.country
                 RequestCurrentWeather(location, lat, lng);
+                RequestTimelineWeather(lat, lng);
             }
         });
     } else {
@@ -69,6 +71,7 @@ function onSubmitClick(event) {
                     let lng = parseFloat(data.results[0].geometry.location.lng);
                     let location = data.results[0].formatted_address;
                     RequestCurrentWeather(location, lat, lng);
+                    RequestTimelineWeather(lat, lng);
                 }
             });
         }
@@ -77,8 +80,8 @@ function onSubmitClick(event) {
 
 function RequestCurrentWeather(location, lat, lng) {
     console.log("request current data", lat, lng);
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
@@ -97,94 +100,10 @@ function DisplayCurrentWeather(location, data) {
         let values = data.data.timelines[0].intervals[0].values;
         console.log(values);
         let weatherCode = values.weatherCode;
-        let weatherText = "none";
-        let weatherImgSrc = "clear_day.svg";
-        switch (weatherCode) {
-            case 1000:
-                weatherText = "Clear";
-                weatherImgSrc = "clear_day.svg";
-                break;
-            case 1100:
-                weatherText = "Mostly Clear";
-                weatherImgSrc = "mostly_clear_day.svg";
-                break;
-            case 1101:
-                weatherText = "Partly Cloudy";
-                weatherImgSrc = "partly_cloudy_day.svg";
-                break;
-            case 1102:
-                weatherText = "Mostly Cloudy";
-                weatherImgSrc = "mostly_cloudy.svg";
-                break;
-            case 1001:
-                weatherText = "Cloudy";
-                weatherImgSrc = "cloudy.svg";
-                break;
-            case 2000:
-                weatherText = "Fog";
-                weatherImgSrc = "fog.svg";
-                break;
-            case 2100:
-                weatherText = "Light Fog";
-                weatherImgSrc = "fog_light.svg";
-                break;
-            case 8000:
-                weatherText = "Thunderstorm";
-                weatherImgSrc = "tstorm.svg";
-                break;
-            case 5001:
-                weatherText = "Flurries";
-                weatherImgSrc = "flurries.svg";
-                break;
-            case 5100:
-                weatherText = "Light Snow";
-                weatherImgSrc = "snow_light.svg";
-                break;
-            case 5000:
-                weatherText = "Snow";
-                weatherImgSrc = "snow.svg";
-                break;
-            case 5101:
-                weatherText = "Heavy Snow";
-                weatherImgSrc = "snow_heavy.svg";
-                break;
-            case 7102:
-                weatherText = "Light Ice Pellets";
-                weatherImgSrc = "ice_pellets_light.svg";
-                break;
-            case 7101:
-                weatherText = "Heavy Ice Pellets";
-                weatherImgSrc = "ice_pellets_heavy.svg";
-                break;
-            case 4000:
-                weatherText = "Drizzle";
-                weatherImgSrc = "drizzle.svg";
-                break;
-            case 6000:
-                weatherText = "Freezing Drizzle";
-                weatherImgSrc = "freezing_drizzle.svg";
-                break;
-            case 6200:
-                weatherText = "Light Freezing Rain";
-                weatherImgSrc = "freezing_rain_light.svg";
-                break;
-            case 6001:
-                weatherText = "Freezing Rain";
-                weatherImgSrc = "freezing_rain.svg";
-                break;
-            case 6201:
-                weatherText = "Heavy Freezing Rain";
-                weatherImgSrc = "freezing_rain_heavy.svg";
-                break;
-            case 4001:
-                weatherText = "Rain";
-                weatherImgSrc = "rain.svg";
-                break;
-            case 4201:
-                weatherText = "Heavy Rain";
-                weatherImgSrc = "rain_heavy.svg";
-                break;
-        }
+        let comb = ConvertWeatherCode(weatherCode);
+        let weatherText = comb[0]
+        let weatherImgSrc = comb[1];
+
         html = `
 <div class="table-1">
     <div class="location">${location}</div>
@@ -239,8 +158,8 @@ function DisplayCurrentWeather(location, data) {
 
 function RequestTimelineWeather(lat, lng) {
     console.log("request weather data", lat, lng);
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;;
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
@@ -253,5 +172,142 @@ function RequestTimelineWeather(lat, lng) {
 }
 
 function DisplayTimelineWeather(data) {
+    let html = `
+    <div class="table-2">
+        <table>
+            <tr>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Temp High</th>
+                <th>Temp Low</th>
+                <th>Wind Speed</th>
+            </tr>`;
 
+    let dayArray = data.data.timelines[0].intervals;
+
+    for (let i=0; i<dayArray.length; i++) {
+        let datetime = new Date(dayArray[i].startTime);
+        let values = dayArray[i].values;
+        let comb = ConvertWeatherCode(values.weatherCode);
+        let weatherText = comb[0];
+        let weatherImgSrc = comb[1];
+        html += `
+            <tr>
+                <td>${GetDateText(datetime)}</td>
+                <td>
+                    <img src="Images/Weather%20Symbols%20for%20Weather%20Codes/${weatherImgSrc}">
+                    <a>${weatherText}</a>
+                </td>
+                <td>${values.temperatureMax}</td>
+                <td>${values.temperatureMin}</td>
+                <td>${values.windSpeed}</td>
+            </tr>
+        `;
+    }
+
+    html += `
+        </table>
+    </div>
+    `;
+
+    document.getElementById("table-2-area").innerHTML = html;
+
+}
+
+function GetDateText(datetime) {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    return `${days[datetime.getDay()]}, ${datetime.getDate()} ${months[datetime.getMonth()]} ${datetime.getFullYear()}`;
+}
+
+function ConvertWeatherCode(weatherCode) {
+    let weatherText = "none";
+    let weatherImgSrc = "clear_day.svg";
+    switch (weatherCode) {
+        case 1000:
+            weatherText = "Clear";
+            weatherImgSrc = "clear_day.svg";
+            break;
+        case 1100:
+            weatherText = "Mostly Clear";
+            weatherImgSrc = "mostly_clear_day.svg";
+            break;
+        case 1101:
+            weatherText = "Partly Cloudy";
+            weatherImgSrc = "partly_cloudy_day.svg";
+            break;
+        case 1102:
+            weatherText = "Mostly Cloudy";
+            weatherImgSrc = "mostly_cloudy.svg";
+            break;
+        case 1001:
+            weatherText = "Cloudy";
+            weatherImgSrc = "cloudy.svg";
+            break;
+        case 2000:
+            weatherText = "Fog";
+            weatherImgSrc = "fog.svg";
+            break;
+        case 2100:
+            weatherText = "Light Fog";
+            weatherImgSrc = "fog_light.svg";
+            break;
+        case 8000:
+            weatherText = "Thunderstorm";
+            weatherImgSrc = "tstorm.svg";
+            break;
+        case 5001:
+            weatherText = "Flurries";
+            weatherImgSrc = "flurries.svg";
+            break;
+        case 5100:
+            weatherText = "Light Snow";
+            weatherImgSrc = "snow_light.svg";
+            break;
+        case 5000:
+            weatherText = "Snow";
+            weatherImgSrc = "snow.svg";
+            break;
+        case 5101:
+            weatherText = "Heavy Snow";
+            weatherImgSrc = "snow_heavy.svg";
+            break;
+        case 7102:
+            weatherText = "Light Ice Pellets";
+            weatherImgSrc = "ice_pellets_light.svg";
+            break;
+        case 7101:
+            weatherText = "Heavy Ice Pellets";
+            weatherImgSrc = "ice_pellets_heavy.svg";
+            break;
+        case 4000:
+            weatherText = "Drizzle";
+            weatherImgSrc = "drizzle.svg";
+            break;
+        case 6000:
+            weatherText = "Freezing Drizzle";
+            weatherImgSrc = "freezing_drizzle.svg";
+            break;
+        case 6200:
+            weatherText = "Light Freezing Rain";
+            weatherImgSrc = "freezing_rain_light.svg";
+            break;
+        case 6001:
+            weatherText = "Freezing Rain";
+            weatherImgSrc = "freezing_rain.svg";
+            break;
+        case 6201:
+            weatherText = "Heavy Freezing Rain";
+            weatherImgSrc = "freezing_rain_heavy.svg";
+            break;
+        case 4001:
+            weatherText = "Rain";
+            weatherImgSrc = "rain.svg";
+            break;
+        case 4201:
+            weatherText = "Heavy Rain";
+            weatherImgSrc = "rain_heavy.svg";
+            break;
+    }
+    return [weatherText, weatherImgSrc];
 }
