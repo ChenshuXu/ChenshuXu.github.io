@@ -5,6 +5,9 @@ function WeatherApp() {
     this.currentWeatherData = null;
     this.hourlyWeatherData = null;
     this.timelineWeatherData = null;
+    this.lat = null;
+    this.lng = null;
+    this.address = null;
 
     document.getElementById("input-form").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -45,6 +48,8 @@ WeatherApp.prototype.Clear = function () {
     document.getElementById("state").value = "";
     document.getElementById("table-1-area").innerHTML = "";
     document.getElementById("table-2-area").innerHTML = "";
+    document.getElementById("weather-details-area").innerHTML = "";
+    document.getElementById("weather-charts-area").innerHTML = "";
 }
 
 WeatherApp.prototype.onSubmitClick = function (event) {
@@ -52,6 +57,7 @@ WeatherApp.prototype.onSubmitClick = function (event) {
     let street = document.getElementById("street").value;
     let city = document.getElementById("city").value;
     let state = document.getElementById("state").value;
+    // get location
     if (document.getElementById("auto-detect-location").checked) {
         console.log("auto detect");
         $.ajax({
@@ -63,8 +69,11 @@ WeatherApp.prototype.onSubmitClick = function (event) {
                 let loc = data.loc;
                 let lat = parseFloat(loc.split(",")[0]);
                 let lng = parseFloat(loc.split(",")[1]);
-                let location = data.city + ", " + data.region + ", " + data.country
-                that.RequestCurrentWeather(location, lat, lng);
+                that.lat = lat;
+                that.lng = lng;
+                let address = data.city + ", " + data.region + ", " + data.country
+                that.address = address;
+                that.RequestCurrentWeather(address, lat, lng);
                 that.RequestTimelineWeather(lat, lng);
             }
         });
@@ -83,8 +92,11 @@ WeatherApp.prototype.onSubmitClick = function (event) {
                     // console.log(data);
                     let lat = parseFloat(data.results[0].geometry.location.lat);
                     let lng = parseFloat(data.results[0].geometry.location.lng);
-                    let location = data.results[0].formatted_address;
-                    that.RequestCurrentWeather(location, lat, lng);
+                    that.lat = lat;
+                    that.lng = lng;
+                    let address = data.results[0].formatted_address;
+                    that.address = address;
+                    that.RequestCurrentWeather(address, lat, lng);
                     that.RequestTimelineWeather(lat, lng);
                 }
             });
@@ -92,24 +104,24 @@ WeatherApp.prototype.onSubmitClick = function (event) {
     }
 }
 
-WeatherApp.prototype.RequestCurrentWeather = function (location, lat, lng) {
+WeatherApp.prototype.RequestCurrentWeather = function (address, lat, lng) {
     let that = this;
     console.log("request current data", lat, lng);
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
         success: function (data) {
-            console.log(data);
+            // console.log("RequestCurrentWeather", data);
             that.currentWeatherData = data;
-            that.DisplayCurrentWeather(location, data);
+            that.DisplayCurrentWeather(address, data);
         }
     });
 }
 
-WeatherApp.prototype.DisplayCurrentWeather = function (location, data) {
+WeatherApp.prototype.DisplayCurrentWeather = function (address, data) {
     console.log("display current weather");
     let html;
     if (data !== null) {
@@ -122,7 +134,7 @@ WeatherApp.prototype.DisplayCurrentWeather = function (location, data) {
 
         html = `
 <div class="table-1">
-    <div class="location">${location}</div>
+    <div class="location">${address}</div>
     <div class="temperature-box">
         <div class="status-image">
             <img src="Images/Weather%20Symbols%20for%20Weather%20Codes/${weatherImgSrc}">
@@ -174,15 +186,15 @@ WeatherApp.prototype.DisplayCurrentWeather = function (location, data) {
 
 WeatherApp.prototype.RequestTimelineWeather = function (lat, lng) {
     let that = this;
-    console.log("request weather data", lat, lng);
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
+    // console.log("request timeline", lat, lng);
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
         success: function (data) {
-            console.log(data);
+            // console.log("request timeline", data);
             that.timelineWeatherData = data;
             that.DisplayTimelineWeather(data);
         }
@@ -248,17 +260,85 @@ WeatherApp.prototype.DisplayTimelineWeather = function (data) {
         row.appendChild(td4);
         row.appendChild(td5);
         table.appendChild(row);
-        row.addEventListener("click", function () {that.onRowClick(dayArray[i])});
+        row.addEventListener("click", function () {
+            that.onRowClick(dayArray[i])});
     }
 }
 
 WeatherApp.prototype.onRowClick = function (dayData) {
     let that = this;
-    console.log("click row", dayData);
-    console.log(this.currentWeatherData);
+    console.log("click row");
     this.Clear();
-
+    this.DisplayWeatherDetails(dayData);
+    // request hourly weather
+    let url = "https://csci571-chenshu-app.azurewebsites.net/example/hourly";
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/hourly?lat="+this.lat+"&lng="+this.lng;
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "json",
+        success: function (data) {
+            // console.log(data);
+            that.hourlyWeatherData = data;
+            that.DisplayWeatherCharts();
+        }
+    });
 }
+
+
+WeatherApp.prototype.DisplayWeatherDetails = function (data) {
+    console.log("DisplayWeatherDetails", data);
+    let values = data.values;
+    let date = new Date(data.startTime);
+    let comb = ConvertWeatherCode(values.weatherCode);
+    let weatherText = comb[0];
+    let weatherImgSrc = comb[1];
+
+    let sunRiseH = new Date(values.sunriseTime).getHours();
+    let sunSetH = new Date(values.sunsetTime).getHours()-12;
+
+    let html = `
+    <div class="weather-details-container">
+        <div class="title">
+            Daily Weather Details
+        </div>
+        <div class="weather-details-box">
+            <div class="titles">
+                <div class="date">${GetDateText(date)}</div>
+                <div class="date">${weatherText}</div>
+                <div class="temperature">${values.temperatureMax}F/${values.temperatureMin}F</div>
+            </div>
+            <div class="status-image"><img src="Images/Weather%20Symbols%20for%20Weather%20Codes/${weatherImgSrc}"></div>
+            <div class="details">
+                <div class="left-column">
+                    <div>Precipitation:</div>
+                    <div>Chance of Rain:</div>
+                    <div>Wind Speed:</div>
+                    <div>Humidity:</div>
+                    <div>Visibility:</div>
+                    <div>Sunrise/Sunset:</div>
+                </div>
+                <div class="right-column">
+                    <div>${ConvertPrecipitationType(values.precipitationType)}</div>
+                    <div>${values.precipitationProbability}</div>
+                    <div>${values.windSpeed} mph</div>
+                    <div>${values.humidity} %</div>
+                    <div>${values.visibility} mi</div>
+                    <div>${sunRiseH}AM/${sunSetH}PM</div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    document.getElementById("weather-details-area").innerHTML = html;
+}
+
+
+WeatherApp.prototype.DisplayWeatherCharts = function () {
+    let that = this;
+    console.log("DisplayWeatherCharts", this.hourlyWeatherData, this.timelineWeatherData);
+}
+
+
 
 function GetDateText(datetime) {
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -356,4 +436,26 @@ function ConvertWeatherCode(weatherCode) {
             break;
     }
     return [weatherText, weatherImgSrc];
+}
+
+function ConvertPrecipitationType(code) {
+    let text = "";
+    switch (code) {
+        case 0:
+            text = "N/A";
+            break;
+        case 1:
+            text = "Rain";
+            break;
+        case 2:
+            text = "Snow";
+            break;
+        case 3:
+            text = "Freezing Rain";
+            break;
+        case 4:
+            text = "Ice Pellets";
+            break;
+    }
+    return text;
 }
