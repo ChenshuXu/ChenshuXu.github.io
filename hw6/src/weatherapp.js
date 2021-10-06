@@ -320,9 +320,9 @@ WeatherApp.prototype.DisplayWeatherDetails = function (data) {
                 </div>
                 <div class="right-column">
                     <div>${ConvertPrecipitationType(values.precipitationType)}</div>
-                    <div>${values.precipitationProbability}</div>
+                    <div>${values.precipitationProbability}%</div>
                     <div>${values.windSpeed} mph</div>
-                    <div>${values.humidity} %</div>
+                    <div>${values.humidity}%</div>
                     <div>${values.visibility} mi</div>
                     <div>${sunRiseH}AM/${sunSetH}PM</div>
                 </div>
@@ -347,7 +347,7 @@ function GetDateText(datetime) {
 }
 
 function ConvertWeatherCode(weatherCode) {
-    let weatherText = "none";
+    let weatherText = "Unknown";
     let weatherImgSrc = "clear_day.svg";
     switch (weatherCode) {
         case 1000:
@@ -425,6 +425,10 @@ function ConvertWeatherCode(weatherCode) {
         case 6201:
             weatherText = "Heavy Freezing Rain";
             weatherImgSrc = "freezing_rain_heavy.svg";
+            break;
+        case 4200:
+            weatherText = "Light Rain";
+            weatherImgSrc = "rain_light.svg";
             break;
         case 4001:
             weatherText = "Rain";
