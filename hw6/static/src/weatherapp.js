@@ -21,7 +21,6 @@ function WeatherApp() {
 
     document.getElementById("submit").addEventListener("click", function (e) {
         that.onSubmitClick(e);
-        that.Clear();
     });
     document.getElementById("clear").addEventListener("click", function (e) {
         e.preventDefault();
@@ -61,6 +60,8 @@ WeatherApp.prototype.onSubmitClick = function (event) {
     let street = document.getElementById("street").value;
     let city = document.getElementById("city").value;
     let state = document.getElementById("state").value;
+    that.Clear();
+
     // get location
     if (document.getElementById("auto-detect-location").checked) {
         console.log("auto detect");
