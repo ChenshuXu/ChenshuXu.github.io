@@ -20,8 +20,8 @@ function WeatherApp() {
     });
 
     document.getElementById("submit").addEventListener("click", function (e) {
-        that.Clear();
         that.onSubmitClick(e);
+        that.Clear();
     });
     document.getElementById("clear").addEventListener("click", function (e) {
         e.preventDefault();
@@ -759,7 +759,7 @@ Meteogram.prototype.parseData = function () {
     for (let i = 0; i < timeline.length; i++) {
         let node = timeline[i];
         let values = node.values;
-        let x = new Date(node.startTime).getTime();
+        let x = new Date(node.startTime);
         let to = x + 36e5;
 
         if (to > pointStart + 5 * 24 * 36e5) {
