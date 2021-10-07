@@ -20,11 +20,13 @@ function WeatherApp() {
     });
 
     document.getElementById("submit").addEventListener("click", function (e) {
+        that.ClearWeatherArea();
         that.onSubmitClick(e);
     });
     document.getElementById("clear").addEventListener("click", function (e) {
         e.preventDefault();
-        that.Clear();
+        that.ClearInput();
+        that.ClearWeatherArea();
     });
 }
 
@@ -32,7 +34,7 @@ WeatherApp.prototype.onAutoDetectLocationChange = function () {
     let that = this;
     if (document.getElementById("auto-detect-location").checked) {
         console.log("checked");
-        this.Clear();
+        this.ClearInput();
         document.getElementById("street").disabled = true;
         document.getElementById("city").disabled = true;
         document.getElementById("state").disabled = true;
@@ -44,15 +46,18 @@ WeatherApp.prototype.onAutoDetectLocationChange = function () {
     }
 }
 
-WeatherApp.prototype.Clear = function () {
-    console.log("clear");
-    document.getElementById("street").value = "";
-    document.getElementById("city").value = "";
-    document.getElementById("state").value = "";
+WeatherApp.prototype.ClearWeatherArea = function () {
     document.getElementById("table-1-area").innerHTML = "";
     document.getElementById("table-2-area").innerHTML = "";
     document.getElementById("weather-details-area").innerHTML = "";
     document.getElementById("weather-charts-area").innerHTML = "";
+}
+
+WeatherApp.prototype.ClearInput = function () {
+    console.log("clear");
+    document.getElementById("street").value = "";
+    document.getElementById("city").value = "";
+    document.getElementById("state").value = "";
 }
 
 WeatherApp.prototype.onSubmitClick = function (event) {
@@ -60,7 +65,6 @@ WeatherApp.prototype.onSubmitClick = function (event) {
     let street = document.getElementById("street").value;
     let city = document.getElementById("city").value;
     let state = document.getElementById("state").value;
-    that.Clear();
 
     // get location
     if (document.getElementById("auto-detect-location").checked) {
@@ -272,7 +276,7 @@ WeatherApp.prototype.DisplayTimelineWeather = function (data) {
 WeatherApp.prototype.onRowClick = function (dayData) {
     let that = this;
     console.log("click row");
-    this.Clear();
+    this.ClearWeatherArea();
     this.DisplayDailyWeatherDetails(dayData);
     this.DisplayWeatherCharts();
 }
