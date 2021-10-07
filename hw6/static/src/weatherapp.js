@@ -110,8 +110,8 @@ WeatherApp.prototype.onSubmitClick = function (event) {
 WeatherApp.prototype.RequestCurrentWeather = function (address, lat, lng) {
     let that = this;
     console.log("request current data", lat, lng);
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/current";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/current?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
@@ -189,8 +189,8 @@ WeatherApp.prototype.DisplayCurrentWeather = function (address, data) {
 WeatherApp.prototype.RequestTimelineWeather = function (lat, lng) {
     let that = this;
     // console.log("request timeline", lat, lng);
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/timelines";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/timelines?lat="+lat+"&lng="+lng;
     $.ajax({
         type: "GET",
         url: url,
@@ -433,8 +433,8 @@ WeatherApp.prototype.DisplayDailyChart = function () {
 WeatherApp.prototype.RequestHourlyWeather = function () {
     let that = this;
     // request hourly weather
-    let url = "https://csci571-chenshu-app.azurewebsites.net/example/hourly";
-    // let url = "https://csci571-chenshu-app.azurewebsites.net/hourly?lat="+this.lat+"&lng="+this.lng;
+    // let url = "https://csci571-chenshu-app.azurewebsites.net/example/hourly";
+    let url = "https://csci571-chenshu-app.azurewebsites.net/hourly?lat="+this.lat+"&lng="+this.lng;
     $.ajax({
         type: "GET",
         url: url,
