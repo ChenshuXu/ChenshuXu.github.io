@@ -20,6 +20,7 @@ function WeatherApp() {
     });
 
     document.getElementById("submit").addEventListener("click", function (e) {
+        that.Clear();
         that.onSubmitClick(e);
     });
     document.getElementById("clear").addEventListener("click", function (e) {
