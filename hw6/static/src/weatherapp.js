@@ -60,6 +60,15 @@ WeatherApp.prototype.ClearInput = function () {
     document.getElementById("state").value = "";
 }
 
+WeatherApp.prototype.ClearCache = function () {
+    this.currentWeatherData = null;
+    this.hourlyWeatherData = null;
+    this.timelineWeatherData = null;
+    this.lat = null;
+    this.lng = null;
+    this.address = null;
+}
+
 WeatherApp.prototype.DisplayNoRecords = function () {
     // console.log("display no records");
     let element = document.getElementById("no-records-area");
@@ -70,6 +79,8 @@ WeatherApp.prototype.DisplayNoRecords = function () {
 
 WeatherApp.prototype.onSubmitClick = function (event) {
     let that = this;
+    this.ClearCache();
+
     let street = document.getElementById("street").value;
     let city = document.getElementById("city").value;
     let state = document.getElementById("state").value;
