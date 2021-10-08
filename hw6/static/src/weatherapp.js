@@ -61,16 +61,12 @@ WeatherApp.prototype.ClearInput = function () {
 }
 
 WeatherApp.prototype.ClearCache = function () {
-    this.currentWeatherData = null;
     this.hourlyWeatherData = null;
-    this.timelineWeatherData = null;
-    this.lat = null;
-    this.lng = null;
-    this.address = null;
 }
 
 WeatherApp.prototype.DisplayNoRecords = function () {
     // console.log("display no records");
+    this.ClearWeatherArea();
     let element = document.getElementById("no-records-area");
     if (!element.innerHTML) {
         element.innerHTML = `<div class="no-records">No records have been found.</div>`;
