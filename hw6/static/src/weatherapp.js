@@ -47,6 +47,7 @@ WeatherApp.prototype.onAutoDetectLocationChange = function () {
 }
 
 WeatherApp.prototype.ClearWeatherArea = function () {
+    document.getElementById("no-records-area").innerHTML = "";
     document.getElementById("table-1-area").innerHTML = "";
     document.getElementById("table-2-area").innerHTML = "";
     document.getElementById("weather-details-area").innerHTML = "";
@@ -54,10 +55,17 @@ WeatherApp.prototype.ClearWeatherArea = function () {
 }
 
 WeatherApp.prototype.ClearInput = function () {
-    console.log("clear");
     document.getElementById("street").value = "";
     document.getElementById("city").value = "";
     document.getElementById("state").value = "";
+}
+
+WeatherApp.prototype.DisplayNoRecords = function () {
+    // console.log("display no records");
+    let element = document.getElementById("no-records-area");
+    if (!element.innerHTML) {
+        element.innerHTML = `<div class="no-records">No records have been found.</div>`;
+    }
 }
 
 WeatherApp.prototype.onSubmitClick = function (event) {
@@ -124,8 +132,12 @@ WeatherApp.prototype.RequestCurrentWeather = function (address, lat, lng) {
         dataType: "json",
         success: function (data) {
             // console.log("RequestCurrentWeather", data);
-            that.currentWeatherData = data;
-            that.DisplayCurrentWeather(address, data);
+            if (!data.data) {
+                that.DisplayNoRecords();
+            } else {
+                that.currentWeatherData = data;
+                that.DisplayCurrentWeather(address, data);
+            }
         }
     });
 }
@@ -203,8 +215,12 @@ WeatherApp.prototype.RequestTimelineWeather = function (lat, lng) {
         dataType: "json",
         success: function (data) {
             // console.log("request timeline", data);
-            that.timelineWeatherData = data;
-            that.DisplayTimelineWeather(data);
+            if (!data.data) {
+                that.DisplayNoRecords();
+            } else {
+                that.timelineWeatherData = data;
+                that.DisplayTimelineWeather(data);
+            }
         }
     });
 }
@@ -349,21 +365,26 @@ WeatherApp.prototype.DisplayWeatherCharts = function () {
     let point = document.getElementById("point");
     point.scrollIntoView(false);
     point.addEventListener("click", function (e) {
+        let container1 = document.getElementById("container1");
+        let container2 = document.getElementById("container2");
         down = !down;
         if (down) {
             point.src = "Images/point-down-512.png";
 
-            document.getElementById("container1").innerHTML = "";
-            document.getElementById("container2").innerHTML = "";
+            container1.innerHTML = "";
+            container1.style.height = "0px";
+            container2.innerHTML = "";
+            container2.style.height = "0px";
             this.scrollIntoView(false);
-
         } else {
             point.src = "Images/point-up-512.png";
 
+            container1.style.height = "400px";
             that.DisplayDailyChart();
+            container2.style.height = "500px";
+            this.scrollIntoView(true);
             if (that.hourlyWeatherData !== null) {
                 that.DisplayHourlyChart();
-                this.scrollIntoView(true);
             } else {
                 that.RequestHourlyWeather();
             }
@@ -447,8 +468,12 @@ WeatherApp.prototype.RequestHourlyWeather = function () {
         dataType: "json",
         success: function (data) {
             // console.log(data);
-            that.hourlyWeatherData = data;
-            that.DisplayHourlyChart();
+            if (!data.data) {
+                that.DisplayNoRecords();
+            } else {
+                that.hourlyWeatherData = data;
+                that.DisplayHourlyChart();
+            }
         }
     });
 }
@@ -457,8 +482,6 @@ WeatherApp.prototype.DisplayHourlyChart = function () {
     let that = this;
     console.log("DisplayHourlyChart", this.hourlyWeatherData);
     let meteogram = new Meteogram(this.hourlyWeatherData, 'container2');
-    let point = document.getElementById("point");
-    point.scrollIntoView(true);
 }
 
 function Meteogram(json, container) {

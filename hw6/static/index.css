@@ -120,6 +120,9 @@ button.clear {
     border: 1px #cbcdcf solid;
     background-color: white;
 }
+.table-1:hover {
+    box-shadow: 5px 5px 5px rgba(128, 128, 128, 0.5);
+}
 .location {
     font-family: sans-serif;
     font-size: 25px;
@@ -230,7 +233,7 @@ td a {
     background-image: linear-gradient(white, #384d76);
 }
 .weather-details-box:hover {
-    box-shadow: 5px 10px #0F3D5C;
+    box-shadow: 5px 5px 5px rgba(128, 128, 128, 0.5);
 }
 .weather-details-box .date {
     color: #334975;
@@ -329,4 +332,15 @@ td a {
 #loading {
     margin-top: 100px;
     text-align: center;
+}
+.no-records {
+    font-family: sans-serif;
+    text-align: center;
+    color: #334975;
+    width: 600px;
+    margin: 20px auto 0 auto;
+    background-color: white;
+    box-shadow: 0 3px #c5c5c5;
+    border: 1px #cbcdcf solid;
+    padding: 10px 0 10px 0;
 }
