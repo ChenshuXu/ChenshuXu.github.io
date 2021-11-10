@@ -67,7 +67,7 @@
   </div>
 
   <div class="container" rightPane *ngIf="selectedDay">
-    <div class="d-flex justify-content-center mr-auto my-3">
+    <div class="d-flex justify-content-center">
       <button type="button" class="btn btn-outline-secondary btn-sm text-dark" (click)="leftVisible = !leftVisible">
         <i-bs name="chevron-left"></i-bs>
         List
@@ -77,5 +77,55 @@
         <i-bs name="twitter"></i-bs>
       </a>
     </div>
+
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th>Status</th>
+          <td>{{selectedDay.statusString}}</td>
+        </tr>
+        <tr>
+          <th>Max Temperature</th>
+          <td>{{selectedDay.temperatureMax}}</td>
+        </tr>
+        <tr>
+          <th>Min Temperature</th>
+          <td>{{selectedDay.temperatureMin}}</td>
+        </tr>
+        <tr>
+          <th>Apparent Temperature</th>
+          <td>{{selectedDay.temperatureApparent}}</td>
+        </tr>
+        <tr>
+          <th>Sun Rise Time</th>
+          <td>{{selectedDay.sunriseTime | date:'shortTime'}}</td>
+        </tr>
+        <tr>
+          <th>Sun Set Time</th>
+          <td>{{selectedDay.sunsetTime | date:'shortTime'}}</td>
+        </tr>
+        <tr>
+          <th>Humidity</th>
+          <td>{{selectedDay.humidity}}</td>
+        </tr>
+        <tr>
+          <th>Wind Speed</th>
+          <td>{{selectedDay.windSpeed}} mph</td>
+        </tr>
+        <tr>
+          <th>Visibilty</th>
+          <td>{{selectedDay.visibility}} mi</td>
+        </tr>
+        <tr>
+          <th>Moon Phase</th>
+          <td>{{selectedDay.moonPhase}}</td>
+        </tr>
+        <tr>
+          <th>Cloud Cover</th>
+          <td>{{selectedDay.cloudCover}} %</td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
 </app-slide-panel>
