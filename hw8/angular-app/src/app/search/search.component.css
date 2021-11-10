@@ -1,0 +1,26 @@
+.input-form {
+  background-color: #f4f4f4;
+  border: 2px solid #e4e4e4;
+  border-radius: 10px;
+  padding-bottom: 1.5em;
+  padding-top: 1.5em;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.required {
+  color: red;
+}
+
+.check-div {
+  margin-top: 0.5em;
+}
+
+.submit {
+  margin-right: 1em;
+}
+
+.is-invalid {
+  background-image: none;
+  padding-right: inherit;
+}

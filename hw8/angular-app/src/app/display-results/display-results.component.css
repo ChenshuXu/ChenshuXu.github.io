@@ -1,0 +1,8 @@
+.weather-image {
+  width: 40px;
+}
+.fake-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}

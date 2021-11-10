@@ -1,0 +1,79 @@
+<div class="container input-form">
+  <div class="d-flex justify-content-center mb-1">
+    <h2>Weather Search 🌤️ </h2>
+  </div>
+
+  <form class="container col-md-8" #myForm="ngForm">
+    <div class="row mb-3">
+      <label for="inputStreet" class="col-md-3 col-form-label">Street<span class="required"> *</span></label>
+      <div class="col">
+        <input class="form-control" id="inputStreet" name="inputStreet" type="text" placeholder="" required
+               #inputStreet="ngModel"
+               [(ngModel)]="searchForm.street"
+               [disabled]="stateControl.disableInputs"
+               [ngClass]="{'is-invalid': inputStreet.touched && inputStreet.invalid}"
+        >
+        <div class="invalid-feedback" *ngIf="inputStreet.touched && inputStreet.invalid">
+          <p>Please enter a valid street.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label for="inputCity" class="col-md-3 col-form-label">City<span class="required"> *</span></label>
+      <div class="col">
+        <input class="form-control" id="inputCity" name="inputCity" type="text" placeholder="" required
+               #inputCity="ngModel"
+               [(ngModel)]="searchForm.city"
+               [disabled]="stateControl.disableInputs"
+               [ngClass]="{'is-invalid': inputCity.touched && inputCity.invalid}"
+        >
+        <!-- AUTOCOMPLETE -->
+        <div class="invalid-feedback" *ngIf="inputCity.touched && inputCity.invalid">
+          <p>Please enter a valid city.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label for="inputSate" class="col-md-3 col-form-label">State</label>
+      <div class="col-md-4">
+        <select id="inputSate" name="inputState" class="form-select form-control"
+                [(ngModel)]="searchForm.state"
+                [disabled]="stateControl.disableInputs"
+        >
+          <option *ngFor="let state of allStates" [value]="state.value">
+            {{state.display}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row mb-3">
+      <label for="inputAutoDetect" class="col-md-3 col-form-label">Auto-detect location<span class="required"> *</span></label>
+      <div class="col-md-9">
+        <div class="form-check check-div">
+          <input class="form-check-input" type="checkbox" id="inputAutoDetect" name="inputAutoDetect"
+                 [(ngModel)]="searchForm.autoDetect"
+                 (click)="onAutoDetectClick()"
+          >
+          <label class="form-check-label" for="inputAutoDetect">Current Location</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary submit"
+        [disabled]="!searchForm.autoDetect && !(searchForm.city && searchForm.street)"
+        (click) = "onSubmit()"
+      >
+        <i-bs name="search"></i-bs>Search
+      </button>
+      <button type="button" class="btn btn-light btn-outline-dark" (click)="clear(myForm)">
+        <i-bs name="list-nested"></i-bs>Clear
+      </button>
+    </div>
+  </form>
+</div>
