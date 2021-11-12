@@ -12,6 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { WeatherapiService } from "./weatherapi.service";
 import { NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { GoogleMapsModule } from "@angular/google-maps";
+import { HighchartsChartModule } from 'highcharts-angular';
 
 import {
   NgxBootstrapIconsModule,
@@ -63,7 +64,8 @@ const icons = {
     NgxBootstrapIconsModule.pick(icons),
     NgbPaginationModule,
     NgbAlertModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    HighchartsChartModule
   ],
   providers: [],
   bootstrap: [AppComponent]

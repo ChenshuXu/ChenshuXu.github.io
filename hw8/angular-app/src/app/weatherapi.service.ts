@@ -22,6 +22,7 @@ export class WeatherapiService {
   private useSampleData = true;
   public dailyData: DailyData[] = [];
   public hourlyData: HourlyData[] = [];
+  public hourlyJson: any;
   public locationData: { address: string; lng: number; lat: number; } = {address:"", lng:0, lat:0};
 
   public state = {
@@ -209,6 +210,7 @@ export class WeatherapiService {
           } else {
             // @ts-ignore
             this.setHourlyData(data.data.timelines[0].intervals);
+            this.hourlyJson = data;
           }
           this.state.isLoading = false;
           console.log(this.hourlyData);
@@ -246,6 +248,7 @@ export class WeatherapiService {
         } else {
           // @ts-ignore
           this.setHourlyData(data.data.timelines[0].intervals);
+          this.hourlyJson = data;
         }
         this.state.isLoading = false;
         console.log(this.hourlyData);
