@@ -126,6 +126,14 @@
         </tr>
       </tbody>
     </table>
+    <div class="container">
+      <!--The div element for the map -->
+      <div>
+        <google-map height="500px" width="100%" [options]="mapOptions">
+          <map-marker [options]="markerOptions"></map-marker>
+        </google-map>
+      </div>
+    </div>
 
   </div>
 </app-slide-panel>

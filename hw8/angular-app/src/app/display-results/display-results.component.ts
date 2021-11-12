@@ -15,9 +15,20 @@ export class DisplayResultsComponent implements OnInit {
   leftVisible: boolean = true;
   selectedDay?: DailyData;
   tweetUrl?: string;
+  center: google.maps.LatLngLiteral = {
+    lat: this.weatherapiService.locationData.lat,
+    lng: this.weatherapiService.locationData.lng
+  };
+  mapOptions: google.maps.MapOptions = {
+    center: this.center,
+    zoom: 15
+  };
+  markerOptions: google.maps.MarkerOptions = {
+    position: this.center,
+  }
 
   onClickDay(day: DailyData) {
-    console.log(day);
+    console.log("selected day", day);
     this.selectedDay = day;
     this.leftVisible = false;
 
@@ -34,10 +45,12 @@ export class DisplayResultsComponent implements OnInit {
 
   ngOnInit(): void {
     this.dailyData = this.weatherapiService.dailyData;
-    console.log("dailyData", this.dailyData);
+    // console.log("dailyData", this.dailyData);
     this.hourlyData = this.weatherapiService.hourlyData;
-    console.log("hourlyData", this.hourlyData);
-
+    // console.log("hourlyData", this.hourlyData);
+    this.center = {
+      lat: this.weatherapiService.locationData.lat,
+      lng: this.weatherapiService.locationData.lng};
   }
 
 }

@@ -8,9 +8,10 @@ import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchComponent } from './search/search.component'; // <-- NgModel lives here
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {WeatherapiService} from "./weatherapi.service";
-import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { WeatherapiService } from "./weatherapi.service";
+import { NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { GoogleMapsModule } from "@angular/google-maps";
 
 import {
   NgxBootstrapIconsModule,
@@ -60,7 +61,9 @@ const icons = {
     BrowserAnimationsModule,
     HttpClientModule,
     NgxBootstrapIconsModule.pick(icons),
-    NgbPaginationModule, NgbAlertModule
+    NgbPaginationModule,
+    NgbAlertModule,
+    GoogleMapsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
