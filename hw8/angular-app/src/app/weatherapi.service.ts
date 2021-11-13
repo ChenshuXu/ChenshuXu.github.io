@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType } from "@angular/common/http";
 import { throwError, BehaviorSubject, of } from "rxjs";
 import { catchError, retry, tap } from "rxjs/operators";
-import {DailyData, FavState, HourlyData} from "./app.models";
+import {DailyData, FavState, HourlyData, LocationData} from "./app.models";
 
 const ipinfo_url = "https://ipinfo.io/?token=5f8b30af9607e3";
 const backend_url = "https://csci571-chenshu-nodejs.azurewebsites.net";
@@ -16,23 +16,23 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sept",
   providedIn: 'root'
 })
 export class WeatherapiService {
-  private favourites: Map<string, FavState> = new Map();
-  private favouritesSubject = new BehaviorSubject<any>({});
-
   private useSampleData = true;
   public dailyData: DailyData[] = [];
   public hourlyData: HourlyData[] = [];
   public hourlyJson: any;
-  public locationData: { address: string; lng: number; lat: number; } = {address:"", lng:0, lat:0};
+  public locationData: LocationData = { address: "", lng: 0, lat: 0, city: "", state: ""};
+  public favorites: Map<string, LocationData> = new Map();
 
   public state = {
     isLoading: false,
-    error: false
+    error: false,
+    done: false
   };
 
   constructor(private http: HttpClient) { }
 
   setDailyData(data: []) {
+    this.dailyData = [];
     for (let i = 0; i < data.length; i++) {
       let current = data[i];
       // @ts-ignore
@@ -84,6 +84,7 @@ export class WeatherapiService {
   }
 
   setHourlyData(data: []) {
+    this.hourlyData = [];
     for (let i = 0; i < data.length; i++) {
       let current = data[i];
       this.hourlyData.push({
@@ -124,7 +125,8 @@ export class WeatherapiService {
   reset() {
     this.state = {
       isLoading: false,
-      error: false
+      error: false,
+      done: false
     }
     this.dailyData = [];
     this.hourlyData = [];
@@ -155,6 +157,7 @@ export class WeatherapiService {
   // called from other component
   getWeatherDataFromAddress(address: string) {
     this.state.isLoading = true;
+    this.state.done = false;
     this.http
       .get(googleapis_url + address + googleapis_key)
       .pipe(retry(1), catchError(this.handleError))
@@ -166,11 +169,9 @@ export class WeatherapiService {
         // @ts-ignore
         let address = locationData.results[0].formatted_address;
         this.getWeatherDataFromLocation(lat, lng);
-        this.locationData = {
-          lat: lat,
-          lng: lng,
-          address: address
-        };
+        this.locationData.lat = lat;
+        this.locationData.lng = lng;
+        this.locationData.address = address;
       })
   }
 
@@ -178,6 +179,7 @@ export class WeatherapiService {
   // get all weather data from backend
   getWeatherDataFromLocation(lat: number, lng: number) {
     this.state.isLoading = true;
+    this.state.done = false;
     if (this.useSampleData) {
       this.getDailyExampleData();
       this.getHourlyExampleData();
@@ -187,7 +189,7 @@ export class WeatherapiService {
         .get(backend_url + "/timelines", {params: {lat: lat, lng: lng}})
         .pipe(retry(1), catchError(this.handleError))
         .subscribe(data => {
-          console.log("get real daily data data", data);
+          // console.log("get real daily data data", data);
           // @ts-ignore
           if (!data.data.timelines) {
             this.state.error = true;
@@ -196,14 +198,15 @@ export class WeatherapiService {
             this.setDailyData(data.data.timelines[0].intervals);
           }
           this.state.isLoading = false;
-          console.log(this.dailyData);
+          this.state.done = true;
+          console.log("daily data", this.dailyData);
         });
       // get hourly data
       this.http
         .get(backend_url + "/hourly", {params: {lat: lat, lng: lng}})
         .pipe(retry(1), catchError(this.handleError))
         .subscribe(data => {
-          console.log("get real hourly data", data);
+          // console.log("get real hourly data", data);
           // @ts-ignore
           if (!data.data.timelines) {
             this.state.error = true;
@@ -213,7 +216,8 @@ export class WeatherapiService {
             this.hourlyJson = data;
           }
           this.state.isLoading = false;
-          console.log(this.hourlyData);
+          this.state.done = true;
+          console.log("hourly data", this.hourlyData);
         });
     }
   }
@@ -223,7 +227,7 @@ export class WeatherapiService {
       .get(backend_url + "/timelines/example")
       .pipe(retry(1), catchError(this.handleError))
       .subscribe(data => {
-        console.log("use daily example data", data);
+        // console.log("use daily example data", data);
         // @ts-ignore
         if (!data.data.timelines) {
           this.state.error = true;
@@ -232,7 +236,8 @@ export class WeatherapiService {
           this.setDailyData(data.data.timelines[0].intervals);
         }
         this.state.isLoading = false;
-        console.log(this.dailyData);
+        this.state.done = true;
+        console.log("daily data", this.dailyData);
       });
   }
 
@@ -241,7 +246,7 @@ export class WeatherapiService {
       .get(backend_url + "/hourly/example")
       .pipe(retry(1), catchError(this.handleError))
       .subscribe(data => {
-        console.log("use hourly example data", data);
+        // console.log("use hourly example data", data);
         // @ts-ignore
         if (!data.data.timelines) {
           this.state.error = true;
@@ -251,33 +256,52 @@ export class WeatherapiService {
           this.hourlyJson = data;
         }
         this.state.isLoading = false;
-        console.log(this.hourlyData);
+        this.state.done = true;
+        console.log("hourly data", this.hourlyData);
       });
   }
 
-  addFavourite(eventId: string, event: FavState) {
-    console.log("adding fav  " + eventId, event)
-    this.favourites.set(eventId, event);
-    this.favouritesSubject.next({ data: this.favourites });
-    localStorage.setItem("favs", JSON.stringify({ data: Array.from(this.favourites.values()) }));
+  removeFavorite() {
+    console.log("remove", this.locationData);
+    let key = this.locationData.city + this.locationData.state;
+    this.favorites.delete(key);
+    this.saveToLocalStorage();
   }
 
-  isFavourite(eventId: string): boolean {
-    return this.favourites.has(eventId);
+  removeFavoriteLocation(location: LocationData) {
+    console.log("remove", location);
+    let key = location.city + location.state;
+    this.favorites.delete(key);
+    this.saveToLocalStorage();
   }
 
-  fetchFavourites() {
-    this.favouritesSubject.next({});
-    this.favourites = new Map();
-    let jsonStr = localStorage.getItem("favs");
+  addFavorite() {
+    console.log("add", this.locationData);
+    let key = this.locationData.city + this.locationData.state;
+    this.favorites.set(key, this.locationData);
+    this.saveToLocalStorage()
+  }
+
+  saveToLocalStorage() {
+    console.log("save ", this.favorites);
+    localStorage.setItem("saved", JSON.stringify({data: Array.from(this.favorites.entries())}));
+  }
+
+  isFavourite(id: string): boolean {
+    return this.favorites.has(id);
+  }
+
+  getFavourites() {
+    this.favorites.clear();
+    let jsonStr = localStorage.getItem("saved");
     if (jsonStr != null) {
       let jsonData = JSON.parse(jsonStr);
-      for (let i = 0; i < jsonData["data"].length; i++) {
-        const element: FavState = jsonData["data"][i];
-        this.favourites.set(element.id, element);
+      for (let i = 0; i < jsonData.data.length; i++) {
+        let key = jsonData.data[i][0];
+        let value: LocationData = jsonData.data[i][1];
+        this.favorites.set(key, value);
       }
-      console.log("Got favs" , this.favourites)
-      this.favouritesSubject.next({ data: this.favourites });
+      console.log("Got favs" , this.favorites);
     }
   }
 

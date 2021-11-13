@@ -35,6 +35,29 @@ export class DisplayResultsComponent implements OnInit {
   dailyChartData = [];
   hourlyChartData = [];
 
+  starName: string = "star-fill";
+  starClass: string = "color-checked";
+  starState: boolean = false; // false: not saved, true: saved
+  onClickSave() {
+    this.starState = !this.starState;
+    this.setStarDisplay();
+    if (this.starState) {
+      this.weatherapiService.addFavorite();
+    } else {
+      this.weatherapiService.removeFavorite();
+    }
+  }
+  setStarDisplay() {
+    if (this.starState) {
+      this.starName = "star-fill";
+      this.starClass = "color-checked";
+    } else {
+      this.starName = "star";
+      this.starClass = "";
+    }
+  }
+
+
   onClickDay(day: DailyData) {
     console.log("selected day", day);
     this.selectedDay = day;
@@ -123,7 +146,7 @@ export class DisplayResultsComponent implements OnInit {
     // @ts-ignore
     let gram = new Meteogram(this.hourlyJson, "hourly-chart");
     // console.log(gram.getChartOptions());
-    let chart = Highcharts.chart('hourly-chart', gram.getChartOptions(), chart => {
+    Highcharts.chart('hourly-chart', gram.getChartOptions(), chart => {
       gram.onChartLoad(chart);
     });
   }
@@ -142,6 +165,11 @@ export class DisplayResultsComponent implements OnInit {
     };
     this.displayDailyChart();
     this.displayHourlyChart();
+
+    this.weatherapiService.getFavourites();
+    let id = this.weatherapiService.locationData.city + this.weatherapiService.locationData.state;
+    this.starState = this.weatherapiService.isFavourite(id);
+    this.setStarDisplay();
   }
 
 }

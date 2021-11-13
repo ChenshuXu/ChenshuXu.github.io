@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, NgForm } from "@angular/forms";
 import { WeatherapiService } from "../weatherapi.service";
 import { AllStates } from "../app.models";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-search',
@@ -21,7 +22,7 @@ export class SearchComponent implements OnInit {
     fullAddress: undefined
   };
 
-  constructor(private weatherapiService: WeatherapiService) { }
+  constructor(private weatherapiService: WeatherapiService, private router: Router) { }
 
   clear(form: NgForm): void {
     form.resetForm();
@@ -36,6 +37,7 @@ export class SearchComponent implements OnInit {
       disableInputs: false
     };
     this.weatherapiService.reset();
+    this.router.navigate(["/home"]);
   }
 
   onAutoDetectClick(): void {
@@ -61,14 +63,22 @@ export class SearchComponent implements OnInit {
         this.weatherapiService.locationData = {
           lat: lat,
           lng: lng,
-          address: address
+          address: address,
+          // @ts-ignore
+          city: data.city,
+          // @ts-ignore
+          state: data.region
         };
         this.weatherapiService.getWeatherDataFromLocation(lat, lng);
       });
     } else {
       let address = this.searchForm.street + " " + this.searchForm.city + " " + this.searchForm.state;
+      // @ts-ignore
+      this.weatherapiService.locationData.city = this.searchForm.city;
+      this.weatherapiService.locationData.state = this.searchForm.state;
       this.weatherapiService.getWeatherDataFromAddress(address);
     }
+    this.router.navigate(["/home"]);
   }
   ngOnInit(): void {
 

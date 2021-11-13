@@ -6,8 +6,8 @@
       <h2 class="mx-auto mx-4">Forecast at {{this.weatherapiService.locationData.address}}</h2>
     </div>
     <div class="d-flex justify-content-end my-3">
-      <button type="button" class="btn btn-sm fav-border">
-        <i-bs name="star"></i-bs>
+      <button type="button" class="btn btn-sm save-button" (click)="onClickSave()">
+        <i-bs name="{{starName}}" class="{{starClass}}"></i-bs>
       </button>
       <button type="button" class="btn btn-link btn-sm text-muted" [disabled]="!selectedDay" (click)="leftVisible=!leftVisible">
         Details <i-bs name="chevron-right"></i-bs>

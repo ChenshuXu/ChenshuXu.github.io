@@ -6,3 +6,9 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.save-button {
+  border: 1px solid gray;
+}
+.color-checked {
+  color: yellow;
+}

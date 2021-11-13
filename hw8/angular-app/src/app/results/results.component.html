@@ -10,6 +10,6 @@
   </div>
 </div>
 
-<div class="container" *ngIf="weatherapiService.dailyData.length > 0">
+<div class="container" *ngIf="weatherapiService.state.done && weatherapiService.dailyData.length > 0 && weatherapiService.hourlyData.length > 0">
   <app-display-results></app-display-results>
 </div>

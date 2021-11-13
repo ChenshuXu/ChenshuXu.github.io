@@ -42,6 +42,14 @@ export interface FavState {
   locationString: string;
 }
 
+export interface LocationData {
+  address: string;
+  lng: number;
+  lat: number;
+  city: string;
+  state: string
+}
+
 export interface SearchForm {
   street: string;
   city: string;
@@ -49,10 +57,6 @@ export interface SearchForm {
   autoDetect: boolean;
   fullAddress: string;
 }
-
-export const EmptyStar = { class: "color-unchecked", name: "star" };
-export const FilledStar = { class: "color-checked", name: "starFill" };
-export const FilledTrash = { class: "color-unchecked", name: "trashFill" };
 
 export const AllStates = [
   { value :"Alabama", display:"Alabama" },
