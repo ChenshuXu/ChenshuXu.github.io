@@ -31,8 +31,7 @@
               "src/styles.css"
             ],
             "scripts": [
-              "src/app/display-results/Meteogram.js",
-              "src/assets/test.js"
+              "src/app/display-results/Meteogram.js"
             ]
           },
           "configurations": {
@@ -40,8 +39,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1000kb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",

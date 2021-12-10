@@ -21,15 +21,15 @@ export class DisplayResultsComponent implements OnInit {
   leftVisible: boolean = true;
   selectedDay?: DailyData;
   tweetUrl?: string;
-  center: google.maps.LatLngLiteral = {
+  center = {
     lat: this.weatherapiService.locationData.lat,
     lng: this.weatherapiService.locationData.lng
   };
-  mapOptions: google.maps.MapOptions = {
+  mapOptions = {
     center: this.center,
     zoom: 15
   };
-  markerOptions: google.maps.MarkerOptions = {
+  markerOptions = {
     position: this.center,
   }
   dailyChartData = [];

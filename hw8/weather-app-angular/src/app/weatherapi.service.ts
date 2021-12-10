@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType } from "@angular/common/http";
 import { throwError, BehaviorSubject, of } from "rxjs";
 import { catchError, retry, tap } from "rxjs/operators";
-import {DailyData, FavState, HourlyData, LocationData} from "./app.models";
+import {DailyData, HourlyData, LocationData} from "./app.models";
 
 const ipinfo_url = "https://ipinfo.io/?token=5f8b30af9607e3";
 const backend_url = "https://csci571-chenshu-nodejs.azurewebsites.net";
@@ -16,7 +16,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sept",
   providedIn: 'root'
 })
 export class WeatherapiService {
-  private useSampleData = true;
+  private useSampleData = false;
   public dailyData: DailyData[] = [];
   public hourlyData: HourlyData[] = [];
   public hourlyJson: any;

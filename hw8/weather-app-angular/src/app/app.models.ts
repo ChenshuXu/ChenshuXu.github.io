@@ -32,30 +32,12 @@ export interface HourlyData {
   pressureSeaLevel: number;
 }
 
-export interface FavState {
-  lat: string;
-  lng: string;
-  city: string;
-  state: string;
-  id: string;
-  timeAdded: number;
-  locationString: string;
-}
-
 export interface LocationData {
   address: string;
   lng: number;
   lat: number;
   city: string;
   state: string
-}
-
-export interface SearchForm {
-  street: string;
-  city: string;
-  state: string;
-  autoDetect: boolean;
-  fullAddress: string;
 }
 
 export const AllStates = [
