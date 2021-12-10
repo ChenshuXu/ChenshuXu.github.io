@@ -1,0 +1,11 @@
+platform :ios, '15.0'
+use_frameworks!
+
+target 'Weather' do
+  pod 'AFNetworking', '~> 2.6'
+  pod 'SwiftyJSON', '~> 4.0'
+  pod 'Toast-Swift', '~> 5.0.1'
+  pod "SwiftSpinner"
+  pod 'Alamofire', '~> 5.4'
+  pod 'Highcharts', '~> 9.3.1'
+end
