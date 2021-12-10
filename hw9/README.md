@@ -6,4 +6,4 @@ After az login, I use `az webapp up --sku B1 -n csci571-chenshu-nodejs-v2 -l wes
 
 ### Links
 
-Sample link to request daily data: https://csci571-chenshu-nodejs-v2.azurewebsites.net/current?lat=33.8840&lng=-84.5144
+Sample link to request daily data: https://csci571-chenshu-nodejs-v2.azurewebsites.net/timelines?lat=33.8840&lng=-84.5144
